@@ -28,7 +28,8 @@ app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
 
 const io = new Server(httpServer, {
-  cors: { origin: process.env.CLIENT_URL },
+cors: { 
+   origin: [process.env.CLIENT_URL, "http://localhost:3000"] ,
    methods: ["GET", "POST"]
 });
 
