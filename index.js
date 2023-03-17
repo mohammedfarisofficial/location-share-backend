@@ -64,6 +64,12 @@ app.get("/api/users", async (req, res) => {
   });
 });
 
+
+const userChange = User.watch();
+userChange.on("change", (change) => {
+  console.log(change);
+});
+
 mongoose.set("strictQuery", true);
 mongoose
   .connect(
