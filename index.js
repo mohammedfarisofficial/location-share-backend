@@ -65,9 +65,18 @@ app.get("/api/users", async (req, res) => {
 });
 
 
-const userChange = User.watch();
+//change stream mongo realtime
+const userChange = User.watch({ fullDocument: "updateLookup" });
 userChange.on("change", (change) => {
-  console.log(change);
+  // console.log(change.fullDocument);
+  console.log(
+    change.fullDocument.name +
+      " changing with => " +
+      " lat :" +
+      change.fullDocument.latitude +
+      " lng :" +
+      change.fullDocument.longitude
+  );
 });
 
 mongoose.set("strictQuery", true);
