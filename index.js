@@ -18,7 +18,7 @@ const httpServer = createServer(app);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-dotenv.config();
+dotenv.config({ path: __dirname + "/.env.local" });
 app.use(express.json());
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
@@ -28,10 +28,10 @@ app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
 
 const io = new Server(httpServer, {
-cors: { 
-   origin: [process.env.CLIENT_URL, "http://localhost:3000"] ,
-   methods: ["GET", "POST"]
-}
+  cors: {
+    origin: [process.env.CLIENT_URL, "http://localhost:3000"],
+    methods: ["GET", "POST"],
+  },
 });
 
 // socket connection
