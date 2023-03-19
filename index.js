@@ -52,8 +52,22 @@ io.on("connection", (socket) => {
       }
     );
     // const response = await updatedUser.save();
-    console.log(updatedUser);
-    socket.broadcast.emit("otherPositions", updatedUser.toJSON());
+    // socket.broadcast.emit("otherPositions", updatedUser.toJSON());
+  });
+
+  //change stream and socket
+
+  const userChange = User.watch({ fullDocument: "updateLookup" });
+  userChange.on("change", (change) => {
+    socket.emit("positionUpdate", change);
+    console.log(
+      change.fullDocument.name +
+        " changing with => " +
+        " lat :" +
+        change.fullDocument.latitude +
+        " lng :" +
+        change.fullDocument.longitude
+    );
   });
 });
 
@@ -62,21 +76,6 @@ app.get("/api/users", async (req, res) => {
   res.json({
     users,
   });
-});
-
-
-//change stream mongo realtime
-const userChange = User.watch({ fullDocument: "updateLookup" });
-userChange.on("change", (change) => {
-  // console.log(change.fullDocument);
-  console.log(
-    change.fullDocument.name +
-      " changing with => " +
-      " lat :" +
-      change.fullDocument.latitude +
-      " lng :" +
-      change.fullDocument.longitude
-  );
 });
 
 mongoose.set("strictQuery", true);
