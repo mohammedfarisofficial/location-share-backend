@@ -44,32 +44,30 @@ io.on("connection", (socket) => {
   //updatings
   socket.on("position", async (position) => {
     const { name, lat, lng } = position.data;
-    const updatedUser = await User.findOneAndUpdate(
+    await User.findOneAndUpdate(
       { name },
       {
         latitude: lat,
         longitude: lng,
       }
     );
-    // const response = await updatedUser.save();
-    // socket.broadcast.emit("otherPositions", updatedUser.toJSON());
   });
 
   //change stream and socket
 
   const userChange = User.watch({ fullDocument: "updateLookup" });
-  userChange.on("change", (change) => {
+  userChange.on("change", async (change) => {
     socket.emit("positionUpdate", change);
-    console.log(
-      change.fullDocument.name +
-        " changing with => " +
-        " lat :" +
-        change.fullDocument.latitude +
-        " lng :" +
-        change.fullDocument.longitude
-    );
   });
 });
+// console.log(
+//   change.fullDocument.name +
+//     " changing with => " +
+//     " lat :" +
+//     change.fullDocument.latitude +
+//     " lng :" +
+//     change.fullDocument.longitude
+// );
 
 app.get("/api/users", async (req, res) => {
   const users = await User.find();
